@@ -33,3 +33,20 @@ const seed="wild bunker stick anxiety label forum fine measure soap best bomb mo
 const address="5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
 
 main(seed,address);
+
+//Testnet faucet ici : https://www.ternoa.network/fr/alphanet
+
+async function testnet(seed: string,address: string) {
+    // Construct passage en mainnet
+    await initializeApi();
+    const caps = await getBalances(address);
+    let free=balanceToNumber(caps.free);
+    console.log('Nombre de Caps :' + free);
+    // Do something
+          let i= 54374;
+          const creationBlockId = await getRentalContractData(i);
+          const keyring = await getKeyringFromSeed(seed);
+          makeRentOffer(i, creationBlockId!.creationBlock, keyring, WaitUntil.BlockFinalization);
+  }
+
+testnet(seed,address);
