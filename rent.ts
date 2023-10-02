@@ -1,6 +1,9 @@
 // Import
 import { WaitUntil, balanceToNumber, getBalances, getKeyringFromSeed, getRentalContractData, getRentalOffers, initializeApi, makeRentOffer } from "ternoa-js"
 
+function isrent(address: string) {
+  return address === "5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
+}
 
 async function main(seed: string,address: string) {
   // Construct passage en mainnet
@@ -13,9 +16,9 @@ async function main(seed: string,address: string) {
           const creationBlockId = await getRentalContractData(i);
           const keyring = await getKeyringFromSeed(seed);
           const rental = await getRentalOffers(i);
-          if(creationBlockId!.rentee == null ){
+          if(creationBlockId!.rentee == null ){  //verifie si le rent est disponible
           makeRentOffer(i, creationBlockId!.creationBlock, keyring, WaitUntil.BlockFinalization);
-            if (rental.find(isrent) ){
+            if (rental.find(isrent) ){ //verifie si le makeRentOffer à bien fonctionné
               console.log('MakeRentOffer done for nft node :' + i);
             }else {
               console.log('script dont rent nft :' + i);
@@ -63,10 +66,6 @@ const address="5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
 main(seed,address);
 
 //Testnet faucet ici : https://www.ternoa.network/fr/alphanet
-
-function isrent(address: string) {
-  return address === "5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
-}
 
 async function testnet(seed: string,address: string) {
     await initializeApi();
