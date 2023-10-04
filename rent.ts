@@ -7,61 +7,30 @@ async function main(seed: string,address: string) {
   const caps = await getBalances(address);
   let free=balanceToNumber(caps.free);
   console.log('Nombre de Caps :' + free);
+  var allnftId = [351521, 351522, 351523, 351524, 351525, 352900, 352901, 352902, 352903, 352904, 359051, 359052, 359053, 359054, 359055, 359056];
   try {
-  // Do something
-        for (let i=351521;i < 351526; i++){
-          const creationBlockId_i = await getRentalContractData(i);
-          const keyring_i = await getKeyringFromSeed(seed);
-          const rental_i = await getRentalOffers(i);
-          if(creationBlockId_i!.rentee == null ){  //verifie si le rent est disponible
-          makeRentOffer(i, creationBlockId_i!.creationBlock, keyring_i, WaitUntil.BlockFinalization);
-            if (rental_i.find(item => item  === address) ){ //verifie si le makeRentOffer à bien fonctionné
-              console.log('MakeRentOffer done for nft node :' + i);
+      for (const nftId of allnftId) {
+           const creationBlockId = await getRentalContractData(nftId);
+          const keyring = await getKeyringFromSeed(seed);
+          const rental = await getRentalOffers(nftId);
+          if(creationBlockId!.rentee == null ){  //verifie si le rent est disponible
+          makeRentOffer(nftId, creationBlockId!.creationBlock, keyring, WaitUntil.BlockFinalization);
+            if (rental.find(item => item  === address) ){ //verifie si le makeRentOffer à bien fonctionné
+              console.log('MakeRentOffer done for nft node :' + nftId);
             }else {
-              console.log('script dont rent nft :' + i);
+              console.log('Error script dont rent nft :' + nftId);
             }
           }else {
-            console.log('Rent not open for nft :'+ i);
+            console.log('Rent not open for nft :'+ nftId);
           }
-        }
-        for (let f=352900 ;f < 352905 ; f++){
-            const creationBlockId_f = await getRentalContractData(f);
-            const keyring_f = await getKeyringFromSeed(seed);
-            const rental_f = await getRentalOffers(f);
-            if(creationBlockId_f!.rentee == null ){
-              makeRentOffer(f, creationBlockId_f!.creationBlock, keyring_f, WaitUntil.BlockFinalization);
-              if (rental_f.find(item => item  === address)){
-                console.log('MakeRentOffer done for nft node :' + f);
-              }else {
-                console.log('script dont rent nft :' + f);
-              }
-            }else {
-              console.log('Rent not open for nft :'+ f);
-            }
-          }
-          for (let g=359051 ;g < 359057 ; g++){
-              const creationBlockId_g = await getRentalContractData(g);
-              const keyring_g = await getKeyringFromSeed(seed);
-              const rental_g = await getRentalOffers(g);
-              if(creationBlockId_g!.rentee == null ){
-              makeRentOffer(g, creationBlockId_g!.creationBlock, keyring_g, WaitUntil.BlockFinalization);
-                if (rental_g.find(item => item  === address) ){
-                console.log('MakeRentOffer done for nft node :' + g);
-                }else {
-                console.log('script dont rent nft :' + g);
-                }
-              }else {
-              console.log('Rent not open for nft :'+ g);
-              }
-          }
-    }
+      }
+  }
   finally {
      await safeDisconnect();
      process.exit();
    }
       
 }
-
 
 const seed="wild bunker stick anxiety label forum fine measure soap best bomb monitor";
 const address="5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
