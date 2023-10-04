@@ -1,10 +1,6 @@
 // Import
 import { WaitUntil, balanceToNumber, getBalances, getKeyringFromSeed, getRentalContractData, getRentalOffers, initializeApi, makeRentOffer, safeDisconnect } from "ternoa-js"
 
-function isrent(address: string) {
-  return address === "5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
-}
-
 async function main(seed: string,address: string) {
   // Construct passage en mainnet
   await initializeApi("wss://mainnet.ternoa.network");
@@ -19,7 +15,7 @@ async function main(seed: string,address: string) {
           const rental_i = await getRentalOffers(i);
           if(creationBlockId_i!.rentee == null ){  //verifie si le rent est disponible
           makeRentOffer(i, creationBlockId_i!.creationBlock, keyring_i, WaitUntil.BlockFinalization);
-            if (rental_i.find(isrent) ){ //verifie si le makeRentOffer à bien fonctionné
+            if (rental_i.find(item => item  === address) ){ //verifie si le makeRentOffer à bien fonctionné
               console.log('MakeRentOffer done for nft node :' + i);
             }else {
               console.log('script dont rent nft :' + i);
@@ -34,7 +30,7 @@ async function main(seed: string,address: string) {
             const rental_f = await getRentalOffers(f);
             if(creationBlockId_f!.rentee == null ){
               makeRentOffer(f, creationBlockId_f!.creationBlock, keyring_f, WaitUntil.BlockFinalization);
-              if (rental_f.find(isrent)){
+              if (rental_f.find(item => item  === address)){
                 console.log('MakeRentOffer done for nft node :' + f);
               }else {
                 console.log('script dont rent nft :' + f);
@@ -49,7 +45,7 @@ async function main(seed: string,address: string) {
               const rental_g = await getRentalOffers(g);
               if(creationBlockId_g!.rentee == null ){
               makeRentOffer(g, creationBlockId_g!.creationBlock, keyring_g, WaitUntil.BlockFinalization);
-                if (rental_g.find(isrent) ){
+                if (rental_g.find(item => item  === address) ){
                 console.log('MakeRentOffer done for nft node :' + g);
                 }else {
                 console.log('script dont rent nft :' + g);
@@ -76,24 +72,28 @@ main(seed,address);
 
 async function testnet(seed: string,address: string) {
     await initializeApi();
-    const caps = await getBalances(address);
-    let free=balanceToNumber(caps.free);
-    console.log('Nombre de Caps :' + free);
-    let i= 54374; // nft -> https://alphanet.secret-stash.io/nft/54374
-    const test_creationBlockId = await getRentalContractData(i);
-    const test_keyring = await getKeyringFromSeed(seed);
-    const test_rental = await getRentalOffers(i);
-    if(test_creationBlockId!.rentee == null ){
-        console.log("Rent is open for nft : "+ i);
-        makeRentOffer(i, test_creationBlockId!.creationBlock, test_keyring, WaitUntil.BlockFinalization);
-        if (test_rental.find(isrent) ){
-                console.log('MakeRentOffer done for nft node :' + i);
-        }else {
-                console.log('script dont rent nft :' + i);
-              }
-    }else {
-      console.log("Rent not open");
+    try {
+      const caps = await getBalances(address);
+      let free=balanceToNumber(caps.free);
+      console.log('Nombre de Caps :' + free);
+      let i= 54374; // nft -> https://alphanet.secret-stash.io/nft/54374
+      const test_creationBlockId = await getRentalContractData(i);
+      const test_keyring = await getKeyringFromSeed(seed);
+      const test_rental = await getRentalOffers(i);
+      if(test_creationBlockId!.rentee == null ){
+          console.log("Rent is open for nft : "+ i);
+          makeRentOffer(i, test_creationBlockId!.creationBlock, test_keyring, WaitUntil.BlockFinalization);
+          if (test_rental.find(item => item  === address) ){
+                  console.log('MakeRentOffer done for nft node :' + i);
+          }else {
+                  console.log('script dont rent nft :' + i);
+          }
+      }else {
+        console.log("Rent not open");
+      }
+    }finally {
+      await safeDisconnect();
+      process.exit();
     }
-  }
-
+}
 //testnet(seed,address);
