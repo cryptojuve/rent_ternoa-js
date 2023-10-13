@@ -29,40 +29,43 @@ async function main(seed: string,address: string) {
      await safeDisconnect();
      process.exit();
    }
-      
 }
 
 const seed="wild bunker stick anxiety label forum fine measure soap best bomb monitor";
 const address="5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
 
-main(seed,address);
+//main(seed,address);
 
 //Testnet faucet ici : https://www.ternoa.network/fr/alphanet
 
 async function testnet(seed: string,address: string) {
-    await initializeApi();
-    try {
-      const caps = await getBalances(address);
-      let free=balanceToNumber(caps.free);
-      console.log('Nombre de Caps :' + free);
-      let i= 54374; // nft -> https://alphanet.secret-stash.io/nft/54374
-      const test_creationBlockId = await getRentalContractData(i);
-      const test_keyring = await getKeyringFromSeed(seed);
-      const test_rental = await getRentalOffers(i);
-      if(test_creationBlockId!.rentee == null ){
-          console.log("Rent is open for nft : "+ i);
-          makeRentOffer(i, test_creationBlockId!.creationBlock, test_keyring, WaitUntil.BlockFinalization);
-          if (test_rental.find(item => item  === address) ){
-                  console.log('MakeRentOffer done for nft node :' + i);
+  // Construct passage en mainnet
+  await initializeApi();
+  const caps = await getBalances(address);
+  let free=balanceToNumber(caps.free);
+  console.log('Nombre de Caps :' + free);
+  var test_allnftId = [54367,54368,54369,54370,54371,54372,54373,54374,54375,54376,54598,54599,55041,55042,72126,72224];
+  try {
+      for (const test_nftId of test_allnftId) {
+          const creationBlockId = await getRentalContractData(test_nftId);
+          const keyring = await getKeyringFromSeed(seed);
+          const rental = await getRentalOffers(test_nftId);
+          if(creationBlockId!.rentee == null ){
+          makeRentOffer(test_nftId, creationBlockId!.creationBlock, keyring, WaitUntil.BlockFinalization);
+              if (rental.find(item => item  === address) ){ //verifie si le makeRentOffer à bien fonctionné
+                console.log('MakeRentOffer done for nft node :' + test_nftId);
+              }else {
+                console.log('Error script dont rent nft :' + test_nftId);
+              }
           }else {
-                  console.log('script dont rent nft :' + i);
+            console.log('Rent not open for nft :'+ test_nftId);
           }
-      }else {
-        console.log("Rent not open");
       }
-    }finally {
-      await safeDisconnect();
-      process.exit();
-    }
+  }
+  finally {
+     await safeDisconnect();
+     process.exit();
+   }
+      
 }
-//testnet(seed,address);
+testnet(seed,address);
