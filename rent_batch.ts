@@ -50,8 +50,8 @@ const alphanet_allnftId = [82007,82008,82009,82010,82011,82012,82013,82014,82015
 const wallet = "Mainnet";
 const allnftId = [351521, 351522, 351523, 351524, 351525, 352900, 352901, 352902, 352903, 352904, 359051, 359052, 359053, 359054, 359055, 359056]; 
 
-const seed="wild bunker stick anxiety label forum fine measure soap best bomb monitor";
-const addresse = "5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
+const seed="";
+const addresse = "";
 
 const mainnet = "wss://mainnet.ternoa.network";
 const alphanet = "";
