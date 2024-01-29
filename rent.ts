@@ -31,8 +31,8 @@ async function main(seed: string,address: string) {
    }
 }
 // A modifier
-const seed="wild bunker stick anxiety label forum fine measure soap best bomb monitor";
-const address="5FPDxicQroicPbkbGWxgesv29LLBhnMcJ4Pm38MUdPppcgqd";
+const seed="";
+const address="";
 
 main(seed,address);
 
